@@ -33,7 +33,7 @@
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd FontInstaller
+cd FontFlow
 
 # Run directly
 python font_installer.py

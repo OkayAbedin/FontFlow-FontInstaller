@@ -97,7 +97,6 @@ def create_distribution_folder():
     files_to_copy = [
         ("dist/FontFlow.exe", "FontFlow.exe"),
         ("README.md", "README.md"),
-        ("QUICK_START.md", "QUICK_START.md"),
         ("test_compatibility.py", "test_compatibility.py"),
         ("test_font_directories.py", "test_font_directories.py"),
         ("create_test_fonts.py", "create_test_fonts.py"),
