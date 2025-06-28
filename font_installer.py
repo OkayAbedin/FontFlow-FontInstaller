@@ -33,8 +33,8 @@ class FontInstaller:
     def setup_window(self):
         """Configure the main window with modern styling."""
         self.root.title("Font Installer")
-        self.root.geometry("700x600")
-        self.root.minsize(600, 500)
+        self.root.geometry("600x480")
+        self.root.minsize(580, 460)
         
         # Modern color scheme
         self.colors = {
@@ -56,28 +56,28 @@ class FontInstaller:
         
         # Center the window
         self.root.update_idletasks()
-        x = (self.root.winfo_screenwidth() // 2) - (700 // 2)
-        y = (self.root.winfo_screenheight() // 2) - (600 // 2)
-        self.root.geometry(f"700x600+{x}+{y}")
+        x = (self.root.winfo_screenwidth() // 2) - (600 // 2)
+        y = (self.root.winfo_screenheight() // 2) - (480 // 2)
+        self.root.geometry(f"600x480+{x}+{y}")
         
         # Configure modern style
         self.setup_modern_style()
         
     def setup_gui(self):
         """Create the modern GUI interface."""
-        # Main container with modern styling
-        main_frame = ttk.Frame(self.root, padding="30")
+        # Main container with reduced padding for more compact layout
+        main_frame = ttk.Frame(self.root, padding="20")
         main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
         
         # Configure grid weights
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
         main_frame.columnconfigure(0, weight=1)
-        main_frame.rowconfigure(3, weight=1)
+        main_frame.rowconfigure(1, weight=1)  # File selection should expand
         
         # Header section
         header_frame = ttk.Frame(main_frame)
-        header_frame.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 40))
+        header_frame.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
         header_frame.columnconfigure(0, weight=1)
         
         # Title with modern typography
@@ -86,7 +86,7 @@ class FontInstaller:
             text="🎨 Font Installer", 
             style='Title.TLabel'
         )
-        title_label.grid(row=0, column=0, pady=(0, 8))
+        title_label.grid(row=0, column=0, pady=(0, 5))
         
         # Modern description with permission info
         desc_text = "Install TTF and OTF fonts from ZIP archives with one click\n"
@@ -114,14 +114,14 @@ class FontInstaller:
         desc_label.grid(row=1, column=0)
         
         # File selection card
-        file_card = ttk.LabelFrame(main_frame, text="📁  Select Font Archives", padding=20)
-        file_card.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 30))
+        file_card = ttk.LabelFrame(main_frame, text="📁  Select Font Archives", padding=15)
+        file_card.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
         file_card.columnconfigure(0, weight=1)
         file_card.rowconfigure(1, weight=1)
         
         # Select button with modern styling
         select_button_frame = ttk.Frame(file_card)
-        select_button_frame.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        select_button_frame.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 10))
         select_button_frame.columnconfigure(0, weight=1)
         
         self.select_btn = ttk.Button(
@@ -134,14 +134,14 @@ class FontInstaller:
         
         # Modern file list
         listbox_frame = ttk.Frame(file_card)
-        listbox_frame.grid(row=1, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 15))
+        listbox_frame.grid(row=1, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 10))
         listbox_frame.columnconfigure(0, weight=1)
         listbox_frame.rowconfigure(0, weight=1)
         
-        # Create a modern-looking listbox
+        # Create a modern-looking listbox with reduced height
         self.files_listbox = tk.Listbox(
             listbox_frame,
-            height=6,
+            height=4,
             font=('Segoe UI', 10),
             selectmode=tk.EXTENDED,
             bg='#ffffff',
@@ -170,8 +170,8 @@ class FontInstaller:
         self.clear_btn.grid(row=2, column=0, sticky=(tk.W))
         
         # Progress card
-        progress_card = ttk.LabelFrame(main_frame, text="⚡  Installation Progress", padding=20)
-        progress_card.grid(row=2, column=0, sticky=(tk.W, tk.E), pady=(0, 30))
+        progress_card = ttk.LabelFrame(main_frame, text="⚡  Installation Progress", padding=15)
+        progress_card.grid(row=2, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
         progress_card.columnconfigure(0, weight=1)
         
         # Modern progress bar
@@ -181,7 +181,7 @@ class FontInstaller:
             length=500,
             style='Modern.Horizontal.TProgressbar'
         )
-        self.progress.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
+        self.progress.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 10))
         
         # Status label with icon
         self.status_label = ttk.Label(
@@ -191,30 +191,15 @@ class FontInstaller:
         )
         self.status_label.grid(row=1, column=0, sticky=(tk.W))
         
-        # Action buttons section
-        action_frame = ttk.Frame(main_frame)
-        action_frame.grid(row=3, column=0, sticky=(tk.W, tk.E), pady=(20, 0))
-        action_frame.columnconfigure(0, weight=1)
-        action_frame.columnconfigure(2, weight=1)
-        
-        # Install button (primary action)
+        # Install button (centered, compact spacing)
         self.install_btn = ttk.Button(
-            action_frame,
+            main_frame,
             text="🚀  Install Fonts",
             command=self.install_fonts,
             state=tk.DISABLED,
             style='Primary.TButton'
         )
-        self.install_btn.grid(row=0, column=1, pady=(0, 20))
-        
-        # Exit button (secondary action)
-        exit_btn = ttk.Button(
-            action_frame,
-            text="❌  Exit",
-            command=self.root.quit,
-            style='Secondary.TButton'
-        )
-        exit_btn.grid(row=1, column=1)
+        self.install_btn.grid(row=3, column=0, pady=(10, 0))
         
         self.selected_files = []
         
@@ -541,7 +526,7 @@ class FontInstaller:
         
         style.configure('Primary.TButton',
                        font=('Segoe UI', 11, 'bold'),
-                       padding=(25, 15))
+                       padding=(20, 12))
         
         style.configure('Secondary.TButton',
                        font=('Segoe UI', 10),

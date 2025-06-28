@@ -38,7 +38,8 @@ python font_installer.py
 
 ## ✨ Features
 
-- **Modern UI Design** - Beautiful, clean interface with modern typography and icons
+- **Modern Compact UI Design** - Beautiful, clean interface with optimized spacing and modern typography
+- **Always Visible Install Button** - Compact layout ensures all controls are visible without resizing
 - **Smart Permission Handling** - Automatic fallback with multiple directory options
 - **Robust User Installation** - Multiple fallback directories ensure installation success
 - **Bulk Processing** - Handle multiple ZIP files at once
@@ -50,7 +51,8 @@ python font_installer.py
 
 ## 🔧 Technical Notes
 
-- **Modern UI Framework** - Enhanced tkinter with modern styling and typography
+- **Compact Modern UI Framework** - Enhanced tkinter with optimized spacing and modern styling  
+- **Optimized Window Size** - 600x480 default size with all controls visible without resizing
 - **No External Dependencies** - Uses only Python standard library
 - **Windows API Integration** - Proper font registration with `AddFontResourceW`
 - **Smart Installation Logic** - System-wide with automatic user-level fallback
