@@ -52,7 +52,7 @@ python font_installer.py
 ## 🔧 Technical Notes
 
 - **Compact Modern UI Framework** - Enhanced tkinter with optimized spacing and modern styling  
-- **Optimized Window Size** - 600x480 default size with all controls visible without resizing
+- **Optimized Window Size** - 700x550 default size with comfortable layout and all controls visible
 - **No External Dependencies** - Uses only Python standard library
 - **Windows API Integration** - Proper font registration with `AddFontResourceW`
 - **Smart Installation Logic** - System-wide with automatic user-level fallback

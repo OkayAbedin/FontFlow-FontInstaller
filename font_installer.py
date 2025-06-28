@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """
-Simple Windows Font Installer
-A modern GUI application to install TTF and OTF fonts from ZIP files.
+Simple Windows Font Install        # Center the window
+        self.root.update_idletasks()
+        x = (self.root.winfo_screenwidth() // 2) - (700 // 2)
+        y = (self.root.winfo_screenheight() // 2) - (550 // 2)
+        self.root.geometry(f"700x550+{x}+{y}") modern GUI application to install TTF and OTF fonts from ZIP files.
 """
 
 import os
@@ -33,8 +36,13 @@ class FontInstaller:
     def setup_window(self):
         """Configure the main window with modern styling."""
         self.root.title("Font Installer")
-        self.root.geometry("600x480")
-        self.root.minsize(580, 460)
+        # Center the window
+        self.root.geometry("700x700")
+        self.root.update_idletasks()
+        x = (self.root.winfo_screenwidth() // 2) - (700 // 2)
+        y = (self.root.winfo_screenheight() // 2) - (700 // 2)
+        self.root.geometry(f"700x700+{x}+{y}")
+        self.root.minsize(700, 700)
         
         # Modern color scheme
         self.colors = {
@@ -138,10 +146,10 @@ class FontInstaller:
         listbox_frame.columnconfigure(0, weight=1)
         listbox_frame.rowconfigure(0, weight=1)
         
-        # Create a modern-looking listbox with reduced height
+        # Create a modern-looking listbox with comfortable height
         self.files_listbox = tk.Listbox(
             listbox_frame,
-            height=4,
+            height=5,
             font=('Segoe UI', 10),
             selectmode=tk.EXTENDED,
             bg='#ffffff',
