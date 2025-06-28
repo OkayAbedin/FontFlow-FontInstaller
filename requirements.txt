@@ -1,0 +1,12 @@
+# Font Installer - Requirements
+# This application uses only Python standard library modules:
+# - tkinter (GUI)
+# - zipfile (ZIP archive handling)
+# - shutil (file operations)
+# - os (operating system interface)
+# - tempfile (temporary directories)
+# - pathlib (path handling)
+# - ctypes (Windows API access)
+# - threading (background operations)
+
+# No external dependencies required!
