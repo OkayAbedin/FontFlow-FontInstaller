@@ -1,8 +1,11 @@
-# Font Installer - Build Requirements
+# FontFlow - Build Requirements
 # This file lists the dependencies needed to build the standalone executable
 
 # PyInstaller for creating standalone executable
 pyinstaller>=5.0
+
+# Pillow for icon conversion (PNG to ICO)
+Pillow>=8.0.0
 
 # Note: The main application uses only Python standard library:
 # - tkinter (GUI) - included with Python

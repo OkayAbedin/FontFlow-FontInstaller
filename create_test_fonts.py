@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Create a test ZIP file with dummy font files for testing the Font Installer.
+Create a test ZIP file with dummy font files for testing FontFlow.
 This creates sample font files (not real fonts) to test the application functionality.
 """
 
@@ -18,7 +18,7 @@ def create_test_font_zip(output_path="test_fonts.zip"):
         "TestFont-Bold.ttf": b"TTF dummy content for testing - not a real font",
         "TestFont-Italic.otf": b"OTF dummy content for testing - not a real font",
         "TestFont-BoldItalic.otf": b"OTF dummy content for testing - not a real font",
-        "readme.txt": b"This is a test font package created for testing the Font Installer.\nThese are not real fonts and will not work as actual fonts.",
+        "readme.txt": b"This is a test font package created for testing FontFlow.\nThese are not real fonts and will not work as actual fonts.",
         "license.txt": b"Test License\nThis is a dummy license file for testing purposes only.",
         "subfolder/TestFont-Light.ttf": b"TTF dummy content in subfolder - not a real font"
     }
@@ -40,7 +40,7 @@ def create_test_font_zip(output_path="test_fonts.zip"):
 
 def main():
     """Create test font ZIP file."""
-    print("Font Installer - Test ZIP Creator")
+    print("FontFlow - Test ZIP Creator")
     print("=" * 40)
     print("Creating a test ZIP file with dummy font files...")
     print()
@@ -48,7 +48,7 @@ def main():
     if create_test_font_zip():
         print()
         print("How to use this test file:")
-        print("1. Run the Font Installer application")
+        print("1. Run the FontFlow application")
         print("2. Select the 'test_fonts.zip' file")
         print("3. Click 'Install Fonts' to test the installation process")
         print()

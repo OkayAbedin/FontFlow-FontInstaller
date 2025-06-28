@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 """
-Simple Windows Font Install        # Center the window
-        self.root.update_idletasks()
-        x = (self.root.winfo_screenwidth() // 2) - (700 // 2)
-        y = (self.root.winfo_screenheight() // 2) - (550 // 2)
-        self.root.geometry(f"700x550+{x}+{y}") modern GUI application to install TTF and OTF fonts from ZIP files.
+FontFlow - A modern GUI application to install TTF and OTF fonts from ZIP files.
 """
 
 import os
@@ -35,7 +31,20 @@ class FontInstaller:
         
     def setup_window(self):
         """Configure the main window with modern styling."""
-        self.root.title("Font Installer")
+        self.root.title("FontFlow")
+        
+        # Set window icon
+        try:
+            # Prefer .ico file for Windows compatibility
+            if os.path.exists("icon.ico"):
+                self.root.iconbitmap("icon.ico")
+            elif os.path.exists("icon.png"):
+                # Fallback to PNG using iconphoto
+                icon_image = tk.PhotoImage(file="icon.png")
+                self.root.iconphoto(True, icon_image)
+        except Exception:
+            pass  # Continue without icon if there's any issue
+            
         # Center the window
         self.root.geometry("700x700")
         self.root.update_idletasks()
@@ -91,7 +100,7 @@ class FontInstaller:
         # Title with modern typography
         title_label = ttk.Label(
             header_frame, 
-            text="🎨 Font Installer", 
+            text="🎨 FontFlow", 
             style='Title.TLabel'
         )
         title_label.grid(row=0, column=0, pady=(0, 5))

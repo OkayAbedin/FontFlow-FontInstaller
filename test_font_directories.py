@@ -63,7 +63,7 @@ def main():
     print("\n" + "=" * 40)
     if success:
         print("🎉 Font installation should work!")
-        print("You can run the Font Installer with confidence.")
+        print("You can run FontFlow with confidence.")
     else:
         print("⚠️  Font installation may have issues.")
         print("Try running as Administrator or contact your system administrator.")

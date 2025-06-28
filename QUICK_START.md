@@ -1,4 +1,4 @@
-# Font Installer - Quick Start Guide
+# FontFlow - Quick Start Guide
 
 ## 🎯 What This Does
 A simple, modern Windows application that automatically installs TTF and OTF fonts from ZIP files.
@@ -6,8 +6,8 @@ A simple, modern Windows application that automatically installs TTF and OTF fon
 ## 🚀 How to Use
 
 ### Method 1: Standalone Executable (Recommended)
-- **Download `FontInstaller_Standalone` folder**
-- **Double-click `FontInstaller.exe`** - No Python required!
+- **Download `FontFlow_Standalone` folder**
+- **Double-click `FontFlow.exe`** - No Python required!
 - **That's it!** - Ready to use immediately
 
 ### Method 2: Double-click Python scripts (requires Python)
@@ -21,7 +21,7 @@ python font_installer.py
 
 ## 📦 Standalone Version Benefits
 - ✅ **No Python installation required** - Everything bundled
-- ✅ **Single executable file** - Just run FontInstaller.exe
+- ✅ **Single executable file** - Just run FontFlow.exe
 - ✅ **No dependencies** - Completely self-contained
 - ✅ **Professional distribution** - Perfect for sharing
 - ✅ **Same features** - Full functionality included

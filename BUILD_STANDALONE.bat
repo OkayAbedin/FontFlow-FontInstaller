@@ -1,5 +1,5 @@
 @echo off
-echo Font Installer - Standalone Builder
+echo FontFlow - Standalone Builder
 echo ====================================
 echo.
 echo This script will:

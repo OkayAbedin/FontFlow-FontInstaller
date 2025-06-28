@@ -1,4 +1,4 @@
-# Font Installer - Requirements
+# FontFlow - Requirements
 # This application uses only Python standard library modules:
 # - tkinter (GUI)
 # - zipfile (ZIP archive handling)

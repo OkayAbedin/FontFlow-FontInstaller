@@ -1,9 +1,9 @@
-# Font Installer - Standalone Distribution Guide
+# FontFlow - Standalone Distribution Guide
 
 ## 🎯 What This Is
 A complete standalone distribution system that creates a single EXE file with no dependencies required!
 
-## 🚀 For Users (Running the Font Installer)
+## 🚀 For Users (Running FontFlow)
 
 ### **Super Simple - No Python Required!**
 1. **Download** the `FontInstaller_Standalone` folder

@@ -1,10 +1,10 @@
-# Font Installer
+# FontFlow
 
 A simple, modern Windows application for installing TTF and OTF fonts from ZIP archives.
 
 ## Features
 
-- **Modern GUI**: Clean, intuitive interface using native Windows styling
+- **Modern GUI**: Clean, intuitive interface using native Windows styling with custom icon
 - **Bulk Installation**: Select multiple ZIP files at once
 - **Auto-Detection**: Automatically finds TTF, OTF, TTC, and OTC font files within ZIP archives
 - **Smart Permission Handling**: 
@@ -32,6 +32,7 @@ A simple, modern Windows application for installing TTF and OTF fonts from ZIP a
    ```bash
    python font_installer.py
    ```
+   Or simply run `FontFlow.exe` if using the standalone version.
 
 2. **Select ZIP files**:
    - Click "Select ZIP Files" button

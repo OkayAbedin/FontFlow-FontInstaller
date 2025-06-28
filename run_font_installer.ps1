@@ -1,5 +1,5 @@
-# Font Installer PowerShell Launcher
-Write-Host "Font Installer" -ForegroundColor Cyan
+# FontFlow PowerShell Launcher
+Write-Host "FontFlow" -ForegroundColor Cyan
 Write-Host "=================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -12,7 +12,7 @@ if (-not $isAdmin) {
     Write-Host ""
 }
 
-Write-Host "Starting Font Installer..." -ForegroundColor Green
+Write-Host "Starting FontFlow..." -ForegroundColor Green
 Write-Host ""
 
 try {
@@ -23,5 +23,5 @@ try {
 }
 
 Write-Host ""
-Write-Host "Font Installer has closed." -ForegroundColor Green
+Write-Host "FontFlow has closed." -ForegroundColor Green
 Read-Host "Press Enter to exit"

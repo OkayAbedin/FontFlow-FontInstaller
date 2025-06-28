@@ -1,11 +1,11 @@
-# Font Installer - Standalone Builder (PowerShell)
-Write-Host "Font Installer - Standalone Builder" -ForegroundColor Cyan
+# FontFlow - Standalone Builder (PowerShell)
+Write-Host "FontFlow - Standalone Builder" -ForegroundColor Cyan
 Write-Host "====================================" -ForegroundColor Cyan
 Write-Host ""
 
 Write-Host "This script will:" -ForegroundColor Green
 Write-Host "1. Install PyInstaller (if needed)" -ForegroundColor Yellow
-Write-Host "2. Build a standalone FontInstaller.exe" -ForegroundColor Yellow
+Write-Host "2. Build a standalone FontFlow.exe" -ForegroundColor Yellow
 Write-Host "3. Create a distribution folder" -ForegroundColor Yellow
 Write-Host ""
 Write-Host "No Python knowledge required - just run this script!" -ForegroundColor Green
@@ -23,7 +23,7 @@ try {
     
     Write-Host ""
     Write-Host "Build process completed!" -ForegroundColor Green
-    Write-Host "Check the FontInstaller_Standalone folder for the results." -ForegroundColor Cyan
+    Write-Host "Check the FontFlow_Standalone folder for the results." -ForegroundColor Cyan
     
 } catch {
     Write-Host ""

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Build script for Font Installer
+Build script for FontFlow
 Creates a standalone executable using PyInstaller
 """
 
@@ -8,6 +8,39 @@ import subprocess
 import sys
 import os
 from pathlib import Path
+
+def convert_icon():
+    """Convert PNG icon to ICO format for Windows compatibility."""
+    if not Path("icon.png").exists():
+        print("⚠️  icon.png not found - skipping icon conversion")
+        return False
+    
+    try:
+        from PIL import Image
+        
+        # Open PNG image
+        img = Image.open("icon.png")
+        
+        # Convert to RGBA if not already
+        if img.mode != 'RGBA':
+            img = img.convert('RGBA')
+        
+        # Create multiple sizes for ICO (Windows standard sizes)
+        sizes = [(16, 16), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)]
+        
+        # Save as ICO
+        img.save("icon.ico", format='ICO', sizes=sizes)
+        
+        print("✓ Converted icon.png to icon.ico")
+        return True
+        
+    except ImportError:
+        print("⚠️  PIL/Pillow not found - install with: pip install Pillow")
+        print("⚠️  Continuing without icon conversion...")
+        return False
+    except Exception as e:
+        print(f"⚠️  Error converting icon: {e}")
+        return False
 
 def install_pyinstaller():
     """Install PyInstaller if not already installed."""
@@ -34,7 +67,8 @@ def create_executable():
         sys.executable, "-m", "PyInstaller",  # Use python -m PyInstaller
         "--onefile",                    # Create single executable file
         "--windowed",                   # Hide console window (GUI app)
-        "--name=FontInstaller",         # Name of executable
+        "--name=FontFlow",         # Name of executable
+        "--icon=icon.ico",              # Application icon
         "--clean",                      # Clean PyInstaller cache
         "--noconfirm",                  # Overwrite without asking
         "font_installer.py"             # Main script
@@ -56,17 +90,19 @@ def create_distribution_folder():
     """Create a distribution folder with the executable and supporting files."""
     print("📁 Creating distribution folder...")
     
-    dist_folder = Path("FontInstaller_Standalone")
+    dist_folder = Path("FontFlow_Standalone")
     dist_folder.mkdir(exist_ok=True)
     
     # Files to include in distribution
     files_to_copy = [
-        ("dist/FontInstaller.exe", "FontInstaller.exe"),
+        ("dist/FontFlow.exe", "FontFlow.exe"),
         ("README.md", "README.md"),
         ("QUICK_START.md", "QUICK_START.md"),
         ("test_compatibility.py", "test_compatibility.py"),
         ("test_font_directories.py", "test_font_directories.py"),
         ("create_test_fonts.py", "create_test_fonts.py"),
+        ("icon.ico", "icon.ico"),
+        ("icon.png", "icon.png"),
     ]
     
     # Copy files to distribution folder
@@ -86,17 +122,17 @@ def create_distribution_folder():
 def create_installer_script():
     """Create a simple installer batch script."""
     installer_script = '''@echo off
-echo Font Installer - Standalone Distribution
-echo =========================================
+echo FontFlow - Standalone Distribution
+echo ===================================
 echo.
 echo This standalone version includes:
-echo - FontInstaller.exe (main application)
+echo - FontFlow.exe (main application)
 echo - Supporting documentation and test scripts
 echo - No Python installation required!
 echo.
-echo To run the Font Installer:
-echo 1. Double-click FontInstaller.exe
-echo 2. Or run from command line: FontInstaller.exe
+echo To run FontFlow:
+echo 1. Double-click FontFlow.exe
+echo 2. Or run from command line: FontFlow.exe
 echo.
 echo Test scripts (requires Python if you want to run them):
 echo - test_compatibility.py - Check system compatibility
@@ -108,43 +144,46 @@ echo.
 pause
 '''
     
-    with open("FontInstaller_Standalone/INSTALL_INFO.bat", "w") as f:
+    with open("FontFlow_Standalone/INSTALL_INFO.bat", "w") as f:
         f.write(installer_script)
     
     print("✓ Created installer info script")
 
 def main():
     """Main build process."""
-    print("Font Installer - Standalone Build System")
+    print("FontFlow - Standalone Build System")
     print("=" * 50)
     
     # Check if we're in the right directory
     if not Path("font_installer.py").exists():
         print("❌ Error: font_installer.py not found")
-        print("Please run this script from the FontInstaller directory")
+        print("Please run this script from the FontFlow directory")
         return False
     
-    # Step 1: Install PyInstaller
+    # Step 1: Convert icon to ICO format
+    convert_icon()
+    
+    # Step 2: Install PyInstaller
     if not install_pyinstaller():
         return False
     
-    # Step 2: Create executable
+    # Step 3: Create executable
     if not create_executable():
         return False
     
-    # Step 3: Create distribution folder
+    # Step 4: Create distribution folder
     dist_folder = create_distribution_folder()
     
-    # Step 4: Create installer info
+    # Step 5: Create installer info
     create_installer_script()
     
     print("\n" + "=" * 50)
     print("🎉 Build completed successfully!")
     print(f"📁 Distribution folder: {dist_folder.absolute()}")
-    print(f"🚀 Executable: {dist_folder / 'FontInstaller.exe'}")
+    print(f"🚀 Executable: {dist_folder / 'FontFlow.exe'}")
     print("\nTo distribute:")
     print(f"1. Share the entire '{dist_folder}' folder")
-    print("2. Users can run FontInstaller.exe directly (no Python needed!)")
+    print("2. Users can run FontFlow.exe directly (no Python needed!)")
     print("3. Include INSTALL_INFO.bat for user instructions")
     
     return True
