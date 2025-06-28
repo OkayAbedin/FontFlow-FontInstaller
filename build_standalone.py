@@ -97,16 +97,35 @@ def create_distribution_folder():
     files_to_copy = [
         ("dist/FontFlow.exe", "FontFlow.exe"),
         ("README.md", "README.md"),
-        ("test_compatibility.py", "test_compatibility.py"),
-        ("test_font_directories.py", "test_font_directories.py"),
-        ("create_test_fonts.py", "create_test_fonts.py"),
         ("icon.ico", "icon.ico"),
-        ("icon.png", "icon.png"),
+    ]
+    
+    # Utility files for utilities subdirectory
+    utility_files = [
+        ("test_compatibility.py", "utilities/test_compatibility.py"),
+        ("test_font_directories.py", "utilities/test_font_directories.py"),
+        ("create_test_fonts.py", "utilities/create_test_fonts.py"),
     ]
     
     # Copy files to distribution folder
     import shutil
+    
+    # Copy main files
     for src, dst in files_to_copy:
+        src_path = Path(src)
+        dst_path = dist_folder / dst
+        
+        if src_path.exists():
+            shutil.copy2(src_path, dst_path)
+            print(f"  ✓ Copied {src} -> {dst}")
+        else:
+            print(f"  ⚠️  Missing {src}")
+    
+    # Create utilities directory and copy utility files
+    utilities_dir = dist_folder / "utilities"
+    utilities_dir.mkdir(exist_ok=True)
+    
+    for src, dst in utility_files:
         src_path = Path(src)
         dst_path = dist_folder / dst
         
