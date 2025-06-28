@@ -5,14 +5,27 @@ A simple, modern Windows application that automatically installs TTF and OTF fon
 
 ## 🚀 How to Use
 
-### Method 1: Double-click to run
+### Method 1: Standalone Executable (Recommended)
+- **Download `FontInstaller_Standalone` folder**
+- **Double-click `FontInstaller.exe`** - No Python required!
+- **That's it!** - Ready to use immediately
+
+### Method 2: Double-click Python scripts (requires Python)
 - **`run_font_installer.bat`** - Simple batch file launcher
 - **`run_font_installer.ps1`** - PowerShell launcher with admin check
 
-### Method 2: Command line
+### Method 3: Command line (requires Python)
 ```bash
 python font_installer.py
 ```
+
+## 📦 Standalone Version Benefits
+- ✅ **No Python installation required** - Everything bundled
+- ✅ **Single executable file** - Just run FontInstaller.exe
+- ✅ **No dependencies** - Completely self-contained
+- ✅ **Professional distribution** - Perfect for sharing
+- ✅ **Same features** - Full functionality included
+- ✅ **Faster startup** - Optimized performance
 
 ## 📋 Step-by-Step Usage
 
@@ -58,21 +71,39 @@ python font_installer.py
 
 ## 🛠️ Files in This Package
 
-- `font_installer.py` - Main application with modern UI
+### **Main Application:**
+- `FontInstaller.exe` - **Standalone executable (recommended!)**
+- `font_installer.py` - Python source version
+
+### **Build System:**
+- `build_standalone.py` - Creates standalone executable
+- `BUILD_STANDALONE.bat` - Easy build script (Windows)
+- `BUILD_STANDALONE.ps1` - PowerShell build script
+- `build_requirements.txt` - Build dependencies
+
+### **Testing & Documentation:**
 - `test_compatibility.py` - System compatibility checker
 - `test_font_directories.py` - Font directory access tester
 - `create_test_fonts.py` - Creates test ZIP files for testing
+- `README.md` - Detailed documentation
+- `QUICK_START.md` - This file
+- `STANDALONE_GUIDE.md` - Complete standalone distribution guide
+
+### **Launch Scripts (for Python version):**
 - `run_font_installer.bat` - Windows batch launcher
 - `run_font_installer.ps1` - PowerShell launcher
-- `README.md` - Detailed documentation
-- `requirements.txt` - Dependencies (none needed!)
-- `QUICK_START.md` - This file
+- `requirements.txt` - Python dependencies (none needed!)
 
 ## 🔍 Troubleshooting
 
 **Application won't start?**
-- Run `python test_compatibility.py` to check your system
-- Ensure Python 3.6+ is installed
+- **Standalone version:** Just double-click `FontInstaller.exe` - no setup needed!
+- **Python version:** Run `python test_compatibility.py` to check your system
+- Ensure you have the correct version for your system (64-bit Windows)
+
+**Want to build your own executable?**
+- Run `BUILD_STANDALONE.bat` to create your own standalone version
+- Check `STANDALONE_GUIDE.md` for complete build instructions
 
 **Fonts not installing?**
 - The app automatically tries multiple user directories for maximum compatibility
@@ -83,7 +114,10 @@ python font_installer.py
 
 **Need help?**
 - Check the detailed `README.md` file
+- Check `STANDALONE_GUIDE.md` for standalone version info
 - Run the compatibility test first
 
 ---
-**Ready to install some fonts? Double-click `run_font_installer.bat` to get started!** 🎨
+**Ready to install some fonts?**
+- **Standalone:** Double-click `FontInstaller.exe` 🚀
+- **Python:** Double-click `run_font_installer.bat` 🎨

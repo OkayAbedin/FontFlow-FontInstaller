@@ -1,0 +1,17 @@
+# Font Installer - Build Requirements
+# This file lists the dependencies needed to build the standalone executable
+
+# PyInstaller for creating standalone executable
+pyinstaller>=5.0
+
+# Note: The main application uses only Python standard library:
+# - tkinter (GUI) - included with Python
+# - zipfile (ZIP archive handling) - standard library
+# - shutil (file operations) - standard library  
+# - os (operating system interface) - standard library
+# - tempfile (temporary directories) - standard library
+# - pathlib (path handling) - standard library
+# - ctypes (Windows API access) - standard library
+# - threading (background operations) - standard library
+
+# PyInstaller will automatically bundle Python and all standard libraries
