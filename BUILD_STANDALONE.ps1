@@ -23,7 +23,7 @@ try {
     
     Write-Host ""
     Write-Host "Build process completed!" -ForegroundColor Green
-    Write-Host "Check the FontFlow_Standalone folder for the results." -ForegroundColor Cyan
+    Write-Host "Check the FontFlow folder for the results." -ForegroundColor Cyan
     
 } catch {
     Write-Host ""

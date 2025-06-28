@@ -7,10 +7,6 @@
 
 > 🚀 A sleek, modern Windows application for effortless font installation from ZIP archives
 
-<div align="center">
-  <img src="icon.png" alt="FontFlow Icon" width="128" height="128">
-</div>
-
 ## ✨ Features
 
 🎯 **Modern GUI** • Clean, intuitive interface with native Windows styling and custom icon  

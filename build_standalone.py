@@ -90,7 +90,7 @@ def create_distribution_folder():
     """Create a distribution folder with the executable and supporting files."""
     print("📁 Creating distribution folder...")
     
-    dist_folder = Path("FontFlow_Standalone")
+    dist_folder = Path("FontFlow")
     dist_folder.mkdir(exist_ok=True)
     
     # Files to include in distribution
@@ -162,7 +162,7 @@ echo.
 pause
 '''
     
-    with open("FontFlow_Standalone/INSTALL_INFO.bat", "w") as f:
+    with open("FontFlow/INSTALL_INFO.bat", "w") as f:
         f.write(installer_script)
     
     print("✓ Created installer info script")
