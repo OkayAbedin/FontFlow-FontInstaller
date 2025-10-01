@@ -65,135 +65,77 @@ FontFlow.exe                # Standalone version
 ### 3️⃣ Install Fonts
 - ⚡ Click **"Install Fonts"** button
 - 🔄 The app will automatically:
-  - Extract font files from ZIP archives
-  - Copy them to Windows Fonts directory
-  - Register them with Windows system
-  - Show real-time progress updates
+  # 🎨 FontFlow — Portable Distribution
 
-### 4️⃣ Enjoy Your New Fonts
-- ✅ Fonts are immediately available in all applications
-- 🔄 No restart required!
-- 🔒 **Fonts persist across computer reboots** (properly registered in Windows registry)
+  This folder contains the standalone FontFlow application you can distribute as a ZIP.
 
-## 🔒 Font Persistence
+  Contents
+  - `FontFlow.exe` — The standalone executable (recommended for end users)
+  - `icon.ico`, `icon.png` — App icons used for shortcuts
+  - `INSTALL_INFO.bat` — Optional installation helper (may contain convenience commands)
+  - `utilities/` — Developer utilities and tests (not required for normal usage)
 
-FontFlow ensures your installed fonts remain available even after restarting your computer by:
+  Quick usage (for end users)
+  1. Unzip the downloaded ZIP file to a location you prefer. Common locations:
+     - `C:\Program Files\FontFlow` (for all users)
+     - `C:\Tools\FontFlow` (portable, system-wide for admins)
+     - `C:\Users\<you>\Applications\FontFlow` (per-user)
 
-- 📝 **Registry Registration**: Fonts are properly registered in the Windows registry
-  - System-wide: `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts`
-  - Fonts are registered in the system registry: `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts`
-- 💾 **File Persistence**: Font files are copied to permanent directories
-- 🔄 **Windows Integration**: Uses official Windows font APIs for maximum compatibility
+  2. Run the application:
+     - Double-click `FontFlow.exe`
+     - Or open PowerShell / Command Prompt and run:
+  ```powershell
+  & "C:\Path\To\FontFlow\FontFlow.exe"
+  ```
 
-## 🎯 Supported Font Formats
+  Recommended placement
+  - For a system-wide install (visible to all users), extract to `C:\Program Files\FontFlow` and run as Administrator when required.
+  - For a portable install (no admin required for extraction), place the folder anywhere you like (USB drive, `C:\Tools`, or your user folder).
 
-| Format | Description | Extension |
-|--------|-------------|-----------|
-| **TTF** | TrueType Font | `.ttf` |
-| **OTF** | OpenType Font | `.otf` |
-| **TTC** | TrueType Collection | `.ttc` |
-| **OTC** | OpenType Collection | `.otc` |
+  Create shortcuts (Start Menu, Desktop)
 
-## 🔧 Installation Types
+  - Create a Desktop shortcut (manual):
+    1. Right-click `FontFlow.exe` → Send to → Desktop (create shortcut)
 
-| Type | Description | Requirements |
-|------|-------------|--------------|
-| 🌍 **System-wide** | Available to all users | Administrator privileges |
-| 🌍 **System-wide** | Available to all users | Administrator privileges required |
+  - Create a Start Menu shortcut (per-user):
+    1. Open `File Explorer` and enter `%appdata%\Microsoft\Windows\Start Menu\Programs` in the address bar.
+    2. Copy a shortcut to `FontFlow.exe` into that folder (Right-click `FontFlow.exe` → Create shortcut → Move the shortcut into the Start Menu folder).
 
-## ⚙️ Technical Details
+  - Create an All Users Start Menu shortcut (requires Administrator):
+    1. Open `C:\ProgramData\Microsoft\Windows\Start Menu\Programs` (you may need elevated permissions).
+    2. Place the shortcut there so the app appears for all users.
 
-<details>
-<summary>🔧 <strong>Technical Implementation</strong></summary>
+  PowerShell script to create a Desktop shortcut (example)
+  ```powershell
+  $W = New-Object -ComObject WScript.Shell
+  $s = $W.CreateShortcut("$env:Public\Desktop\FontFlow.lnk")
+  $s.TargetPath = 'C:\Path\To\FontFlow\FontFlow.exe'
+  $s.IconLocation = 'C:\Path\To\FontFlow\icon.ico'
+  $s.Save()
+  ```
 
-- **Windows API Integration**: Uses `AddFontResourceW` for proper font registration
-- **Registry Persistence**: Fonts are permanently registered in Windows registry for persistence across reboots
-- **Threading**: Implements thread-based installation to maintain responsive GUI
-- **Best Practices**: Follows Windows font installation guidelines
-- **Modern UI**: Built with tkinter using native Windows styling
-- **Error Recovery**: Comprehensive error handling with graceful degradation
+  Pin to Taskbar or Start
+  - Right-click the executable or the shortcut and choose **Pin to taskbar** or **Pin to Start**.
+  - Note: Some versions of Windows require you to right-click the shortcut in the Start Menu or Desktop to reveal the pin options.
 
-</details>
+  Running the script version (developer / source)
+  - If you distributed the full source and Python script instead of the EXE, run:
+  ```powershell
+  python font_installer.py
+  ```
 
-<details>
-<summary>📊 <strong>Performance & Compatibility</strong></summary>
+  Permissions & Administrator notes
+  - Installing fonts system-wide requires Administrator privileges. If the app prompts for elevation, run it as Administrator (right-click → Run as administrator).
+  - If you prefer not to give admin rights, you can still extract the ZIP and keep FontFlow portable, but system-wide font installation requires elevation.
 
-- **Lightweight**: ~11MB standalone executable
-- **Fast**: Efficient ZIP extraction and font processing
-- **Compatible**: Windows 7, 8, 10, 11 support
-- **Portable**: No installation required for standalone version
-- **Clean**: Automatic temporary file cleanup
+  Uninstall / Remove
+  - To remove FontFlow simply delete the extracted `FontFlow` folder and any shortcuts you created.
 
-</details>
+  Troubleshooting
+  - If FontFlow doesn't start, make sure Windows Defender or other antivirus didn't block `FontFlow.exe`.
+  - If fonts didn't appear in applications after install, try restarting the target application; if that fails, run the installer as Administrator and try again.
 
-## 🆘 Troubleshooting
+  Contact / Support
+  - For issues, check the `utilities/` scripts to run local checks, or file an issue with the distributor.
 
-<details>
-<summary>❓ <strong>Common Issues & Solutions</strong></summary>
-
-### 🔍 **Fonts not appearing in applications**
-- Try restarting the application that should use the font
-- Verify the font file wasn't corrupted during extraction
-
-### ❌ **Installation fails**  
-- This application installs fonts system-wide and requires Administrator privileges. If installation fails due to permissions, run the app as Administrator.
-- Check that ZIP files aren't corrupted or password-protected
-- Ensure ZIP files actually contain valid font files
-
-### 🛡️ **Run as Administrator**
-- Right-click batch file → **"Run as Administrator"**
-- Or launch an elevated Command Prompt / PowerShell and run: `python font_installer.py`
-
-### 🚫 **Application won't start**
-- Ensure Python 3.6+ is installed (script version only)
-- Run `python test_compatibility.py` to check your system
-- Note: This application only works on Windows
-
-</details>
-
-## 🏗️ Building from Source
-
-<details>
-<summary>🔨 <strong>Create Standalone Executable</strong></summary>
-
-```bash
-# Install build dependencies
-pip install -r build_requirements.txt
-
-# Build standalone executable
-python build_standalone.py
-
-# Or use PowerShell
-./BUILD_STANDALONE.ps1
-```
-
-**Output**: Complete `FontFlow/` folder ready for distribution
-
-</details>
-
-## 🤝 Contributing
-
-We welcome contributions! Here's how you can help:
-
-- 🐛 **Report bugs** via GitHub Issues
-- 💡 **Suggest features** or improvements  
-- 🔧 **Submit pull requests** with enhancements
-- 📖 **Improve documentation**
-
-## 📄 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
-## ⭐ Show Your Support
-
-If FontFlow helped you manage your fonts more easily, please consider:
-- ⭐ **Starring** this repository
-- 🐦 **Sharing** with fellow designers and developers
-- 🔄 **Contributing** to make it even better
-
----
-
-<div align="center">
-  <strong>Made with ❤️ for the design community</strong><br>
-  <em>Simple font installation • Modern interface • Zero hassle</em>
-</div>
+  Enjoy — simple, portable font installation with FontFlow.
