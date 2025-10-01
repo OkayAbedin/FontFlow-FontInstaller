@@ -16,6 +16,11 @@ from ctypes import wintypes
 import threading
 from typing import List, Set
 import winreg
+try:
+    from PIL import Image, ImageTk
+    PIL_AVAILABLE = True
+except ImportError:
+    PIL_AVAILABLE = False
 
 # Windows API constants
 HWND_BROADCAST = 0xFFFF
@@ -98,13 +103,56 @@ class FontInstaller:
         header_frame.grid(row=0, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
         header_frame.columnconfigure(0, weight=1)
         
-        # Title with modern typography
+        # Title with modern typography and icon
+        title_frame = ttk.Frame(header_frame)
+        title_frame.grid(row=0, column=0, pady=(0, 5))
+        
+        # Load and display icon
+        icon_loaded = False
+        try:
+            if PIL_AVAILABLE:
+                # Try to load .ico file first
+                if os.path.exists("icon.ico"):
+                    img = Image.open("icon.ico")
+                    img = img.resize((32, 32), Image.Resampling.LANCZOS)
+                    icon_img = ImageTk.PhotoImage(img)
+                    icon_label = ttk.Label(title_frame, image=icon_img)
+                    icon_label.image = icon_img  # Keep a reference
+                    icon_label.grid(row=0, column=0, padx=(0, 10))
+                    icon_loaded = True
+                elif os.path.exists("icon.png"):
+                    img = Image.open("icon.png")
+                    img = img.resize((32, 32), Image.Resampling.LANCZOS)
+                    icon_img = ImageTk.PhotoImage(img)
+                    icon_label = ttk.Label(title_frame, image=icon_img)
+                    icon_label.image = icon_img  # Keep a reference
+                    icon_label.grid(row=0, column=0, padx=(0, 10))
+                    icon_loaded = True
+            elif os.path.exists("icon.png"):
+                # Fallback to tk.PhotoImage for PNG if PIL not available
+                icon_img = tk.PhotoImage(file="icon.png")
+                # Resize icon to fit nicely in the title (32x32 pixels)
+                subsample_x = max(1, icon_img.width() // 32)
+                subsample_y = max(1, icon_img.height() // 32)
+                icon_img = icon_img.subsample(subsample_x, subsample_y)
+                icon_label = ttk.Label(title_frame, image=icon_img)
+                icon_label.image = icon_img  # Keep a reference
+                icon_label.grid(row=0, column=0, padx=(0, 10))
+                icon_loaded = True
+        except Exception as e:
+            pass  # Will use emoji fallback
+        
+        if not icon_loaded:
+            # Fallback to emoji if icon can't be loaded
+            icon_label = ttk.Label(title_frame, text="🎨", style='Title.TLabel')
+            icon_label.grid(row=0, column=0, padx=(0, 5))
+        
         title_label = ttk.Label(
-            header_frame, 
-            text="🎨 FontFlow", 
+            title_frame, 
+            text="FontFlow", 
             style='Title.TLabel'
         )
-        title_label.grid(row=0, column=0, pady=(0, 5))
+        title_label.grid(row=0, column=1)
         
         # Modern description with permission info
         desc_text = "Install TTF and OTF fonts from ZIP archives with one click\n"
