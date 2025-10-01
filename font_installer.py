@@ -258,7 +258,7 @@ class FontInstaller:
         # Status label with icon
         self.status_label = ttk.Label(
             progress_card,
-            text="Ready to install fonts",
+            text="Select ZIP files to begin",
             style='Status.TLabel'
         )
         self.status_label.grid(row=1, column=0, sticky=(tk.W))
@@ -304,10 +304,18 @@ class FontInstaller:
             self.files_listbox.insert(tk.END, filename)
             
     def update_button_states(self):
-        """Update button states based on selected files."""
+        """Update button states and status message based on selected files."""
         has_files = len(self.selected_files) > 0
         self.install_btn.config(state=tk.NORMAL if has_files else tk.DISABLED)
         self.clear_btn.config(state=tk.NORMAL if has_files else tk.DISABLED)
+        
+        # Update status message based on selection
+        if has_files:
+            file_count = len(self.selected_files)
+            file_text = "file" if file_count == 1 else "files"
+            self.status_label.config(text=f"Ready to install fonts from {file_count} {file_text}")
+        else:
+            self.status_label.config(text="Select ZIP files to begin")
         
     def extract_fonts_from_zip(self, zip_path: str, temp_dir: str) -> List[str]:
         """Extract font files from a ZIP archive."""
@@ -556,41 +564,59 @@ class FontInstaller:
                        selectbackground=self.colors['primary'],
                        selectforeground='white')
         
-        # Configure modern button styles
+        # Configure modern button styles with rounded appearance
         style.configure('Modern.TButton',
                        font=('Segoe UI', 12),
                        padding=(20, 12),
                        background=self.colors['surface'],
                        foreground=self.colors['text'],
-                       borderwidth=1,
-                       relief='solid')
+                       borderwidth=0,
+                       relief='flat',
+                       focuscolor='none')
         
         style.map('Modern.TButton',
                  background=[('active', self.colors['secondary']),
-                           ('pressed', self.colors['border'])])
+                           ('pressed', self.colors['border'])],
+                 foreground=[('active', self.colors['text']),
+                           ('pressed', self.colors['text'])],
+                 relief=[('pressed', 'sunken'),
+                        ('active', 'flat')])
         
         style.configure('Primary.TButton',
                        font=('Segoe UI', 13, 'bold'),
-                       padding=(20, 12),
+                       padding=(25, 15),
                        background=self.colors['primary'],
                        foreground='white',
-                       borderwidth=0)
+                       borderwidth=0,
+                       relief='flat',
+                       focuscolor='none')
         
         style.map('Primary.TButton',
                  background=[('active', self.colors['primary_hover']),
-                           ('pressed', self.colors['primary_hover'])])
+                           ('pressed', self.colors['primary_hover']),
+                           ('disabled', self.colors['border'])],
+                 foreground=[('disabled', self.colors['text_muted'])],
+                 relief=[('pressed', 'sunken'),
+                        ('active', 'flat')])
         
         style.configure('Secondary.TButton',
                        font=('Segoe UI', 12),
-                       padding=(15, 10),
+                       padding=(18, 12),
                        background=self.colors['secondary'],
                        foreground=self.colors['text'],
-                       borderwidth=1,
-                       relief='solid')
+                       borderwidth=0,
+                       relief='flat',
+                       focuscolor='none')
         
         style.map('Secondary.TButton',
                  background=[('active', self.colors['border']),
-                           ('pressed', self.colors['border'])])
+                           ('pressed', self.colors['border']),
+                           ('disabled', self.colors['surface'])],
+                 foreground=[('active', self.colors['text']),
+                           ('pressed', self.colors['text']),
+                           ('disabled', self.colors['text_muted'])],
+                 relief=[('pressed', 'sunken'),
+                        ('active', 'flat')])
         
         # Configure label styles
         style.configure('Title.TLabel',
