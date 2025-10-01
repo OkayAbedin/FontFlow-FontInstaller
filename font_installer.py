@@ -202,7 +202,7 @@ class FontInstaller:
             command=self.select_files,
             style='Primary.TButton'
         )
-        self.select_btn.grid(row=0, column=0)
+        self.select_btn.grid(row=0, column=0, sticky=(tk.W, tk.E))
         
         # Modern file list
         listbox_frame = ttk.Frame(file_card)
@@ -231,13 +231,14 @@ class FontInstaller:
         scrollbar.grid(row=0, column=1, sticky=(tk.N, tk.S))
         self.files_listbox.configure(yscrollcommand=scrollbar.set)
         
-        # Clear button
+        # Clear button (icon only)
         self.clear_btn = ttk.Button(
             file_card,
-            text="Clear List",
+            text="✕",
             command=self.clear_files,
             state=tk.DISABLED,
-            style='Secondary.TButton'
+            style='Icon.TButton',
+            width=3
         )
         self.clear_btn.grid(row=2, column=0, sticky=(tk.W))
         
@@ -269,9 +270,9 @@ class FontInstaller:
             text="Install Fonts",
             command=self.install_fonts,
             state=tk.DISABLED,
-            style='Primary.TButton'
+            style='Success.TButton'
         )
-        self.install_btn.grid(row=3, column=0, pady=(10, 0))
+        self.install_btn.grid(row=3, column=0, sticky=(tk.W, tk.E), pady=(10, 0))
         
         self.selected_files = []
         
@@ -618,6 +619,44 @@ class FontInstaller:
                  relief=[('pressed', 'sunken'),
                         ('active', 'flat')])
         
+        # Configure icon button style (small, minimal)
+        style.configure('Icon.TButton',
+                       font=('Segoe UI', 11),
+                       padding=(8, 8),
+                       background=self.colors['surface'],
+                       foreground=self.colors['text_muted'],
+                       borderwidth=0,
+                       relief='flat',
+                       focuscolor='none')
+        
+        style.map('Icon.TButton',
+                 background=[('active', self.colors['danger']),
+                           ('pressed', self.colors['danger']),
+                           ('disabled', self.colors['surface'])],
+                 foreground=[('active', 'white'),
+                           ('pressed', 'white'),
+                           ('disabled', self.colors['border'])],
+                 relief=[('pressed', 'sunken'),
+                        ('active', 'flat')])
+        
+        # Configure success button style (green)
+        style.configure('Success.TButton',
+                       font=('Segoe UI', 13, 'bold'),
+                       padding=(25, 15),
+                       background=self.colors['success'],
+                       foreground='white',
+                       borderwidth=0,
+                       relief='flat',
+                       focuscolor='none')
+        
+        style.map('Success.TButton',
+                 background=[('active', '#1e7e34'),  # Darker green on hover
+                           ('pressed', '#1e7e34'),
+                           ('disabled', self.colors['border'])],
+                 foreground=[('disabled', self.colors['text_muted'])],
+                 relief=[('pressed', 'sunken'),
+                        ('active', 'flat')])
+        
         # Configure label styles
         style.configure('Title.TLabel',
                        font=('Segoe UI', 26, 'bold'),
@@ -631,7 +670,6 @@ class FontInstaller:
         
         style.configure('Status.TLabel',
                        font=('Segoe UI', 13, 'bold'),
-                       background=self.colors['surface'],
                        foreground=self.colors['text'])
         
         # Configure frame styles
