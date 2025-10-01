@@ -164,21 +164,20 @@ class FontInstaller:
         
         # Modern description with permission info
         desc_text = "Install TTF and OTF fonts from ZIP archives with one click\n"
-        
-        # Check admin privileges and font directory access
+
+        # Ensure the application is running with administrator privileges
         try:
             is_admin = ctypes.windll.shell32.IsUserAnAdmin()
-            user_dir = self.check_user_font_directory()
-            
-            if is_admin:
-                desc_text += "🔐 Administrator mode • System-wide installation"
-            elif user_dir:
-                desc_text += "👤 User mode • Fonts will install to user directory"
-            else:
-                desc_text += "⚠️ Limited permissions • Will attempt alternative installation"
-        except:
-            desc_text += "⚠️ Permission status unknown"
-            
+            if not is_admin:
+                print("This application requires administrator privileges to run.")
+                ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, "".join(sys.argv), None, 1)
+                sys.exit(0)
+        except Exception as e:
+            print(f"Error checking administrator privileges: {e}")
+            sys.exit(1)
+
+        desc_text += "🔐 Administrator mode • System-wide installation"
+        
         desc_label = ttk.Label(
             header_frame,
             text=desc_text,
@@ -383,116 +382,13 @@ class FontInstaller:
                     pass
                     
         except PermissionError:
-            # Fall back to user-level installation
-            pass
+            print(f"System installation failed for {font_filename}: Administrator privileges are required.")
+            return
         except Exception as e:
             print(f"System installation failed for {font_filename}: {str(e)}")
         
-        # Try user-level installation (no admin required)
-        try:
-            # Try multiple user font directory locations
-            user_font_locations = [
-                # Primary user font directory (Windows 10+)
-                os.path.join(os.path.expanduser('~'), 'AppData', 'Local', 'Microsoft', 'Windows', 'Fonts'),
-                # Alternative user font directory
-                os.path.join(os.path.expanduser('~'), 'AppData', 'Roaming', 'Microsoft', 'Windows', 'Fonts'),
-                # Fallback to user's Documents folder
-                os.path.join(os.path.expanduser('~'), 'Documents', 'Fonts'),
-                # Last resort - temp directory that user can access
-                os.path.join(tempfile.gettempdir(), 'UserFonts')
-            ]
-            
-            user_dest_path = None
-            user_fonts_dir = None
-            
-            # Try each location until we find one that works
-            for location in user_font_locations:
-                try:
-                    # Create directory if it doesn't exist
-                    os.makedirs(location, exist_ok=True)
-                    
-                    # Test if we can write to this directory
-                    test_file = os.path.join(location, 'test_write.tmp')
-                    with open(test_file, 'w') as f:
-                        f.write('test')
-                    os.remove(test_file)
-                    
-                    # If we get here, this location works
-                    user_fonts_dir = location
-                    user_dest_path = os.path.join(location, font_filename)
-                    break
-                    
-                except (PermissionError, OSError):
-                    continue
-            
-            if not user_fonts_dir:
-                return False, "no writable user directory found"
-            
-            # Copy font file to user fonts directory
-            shutil.copy2(font_path, user_dest_path)
-            
-            # Try to register the font with Windows (user-level)
-            try:
-                gdi32 = ctypes.windll.gdi32
-                user32 = ctypes.windll.user32
-                
-                # Add font resource
-                result = gdi32.AddFontResourceW(user_dest_path)
-                
-                # Register in user registry for persistence across reboots
-                registry_success = False
-                try:
-                    with winreg.OpenKey(winreg.HKEY_CURRENT_USER, 
-                                      r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts", 
-                                      0, winreg.KEY_SET_VALUE) as key:
-                        # Create registry entry with font name and full path for user fonts
-                        font_reg_name = self.get_font_name_from_file(font_path)
-                        winreg.SetValueEx(key, font_reg_name, 0, winreg.REG_SZ, user_dest_path)
-                        registry_success = True
-                except winreg.FileNotFoundError:
-                    # Create the Fonts key if it doesn't exist
-                    try:
-                        with winreg.CreateKey(winreg.HKEY_CURRENT_USER, 
-                                            r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts") as key:
-                            font_reg_name = self.get_font_name_from_file(font_path)
-                            winreg.SetValueEx(key, font_reg_name, 0, winreg.REG_SZ, user_dest_path)
-                            registry_success = True
-                    except Exception as create_error:
-                        print(f"Failed to create user registry key for {font_filename}: {str(create_error)}")
-                except Exception as reg_error:
-                    print(f"User registry registration failed for {font_filename}: {str(reg_error)}")
-                
-                if result > 0:
-                    # Notify all windows that fonts have changed
-                    user32.SendMessageTimeoutW(
-                        HWND_BROADCAST,
-                        WM_FONTCHANGE,
-                        0,
-                        0,
-                        SMTO_ABORTIFHUNG,
-                        1000,
-                        None
-                    )
-                    if registry_success:
-                        return True, "user-level"
-                    else:
-                        return True, "user-level (registration failed, may not persist after reboot)"
-                else:
-                    # Font was copied but loading failed
-                    if registry_success:
-                        return True, "user-level (file copied and registered, loading failed)"
-                    else:
-                        return True, "user-level (file copied, registration and loading failed)"
-                    
-            except Exception as reg_error:
-                # Font was copied but registration failed
-                print(f"Font registration failed for {font_filename}: {str(reg_error)}")
-                return True, "user-level (file copied, registration failed)"
-                
-        except Exception as e:
-            print(f"User installation failed for {font_filename}: {str(e)}")
-            return False, f"error: {str(e)}"
-            
+        return False, "unknown error"
+        
     def get_font_name_from_file(self, font_path: str) -> str:
         """Extract the actual font name from the font file for better registry registration."""
         try:
