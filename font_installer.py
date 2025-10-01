@@ -60,12 +60,11 @@ class FontInstaller:
             pass  # Continue without icon if there's any issue
             
         # Center the window
-        self.root.geometry("700x700")
         self.root.update_idletasks()
-        x = (self.root.winfo_screenwidth() // 2) - (700 // 2)
-        y = (self.root.winfo_screenheight() // 2) - (700 // 2)
-        self.root.geometry(f"700x700+{x}+{y}")
-        self.root.minsize(700, 700)
+        x = (self.root.winfo_screenwidth() // 2) - (1200 // 2)
+        y = (self.root.winfo_screenheight() // 2) - (800 // 2)
+        self.root.geometry(f"1200x800+{x}+{y}")
+        self.root.minsize(400, 600)
         
         # Modern color scheme
         self.colors = {
@@ -87,9 +86,9 @@ class FontInstaller:
         
         # Center the window
         self.root.update_idletasks()
-        x = (self.root.winfo_screenwidth() // 2) - (600 // 2)
-        y = (self.root.winfo_screenheight() // 2) - (480 // 2)
-        self.root.geometry(f"600x480+{x}+{y}")
+        x = (self.root.winfo_screenwidth() // 2) - (1200 // 2)
+        y = (self.root.winfo_screenheight() // 2) - (800 // 2)
+        self.root.geometry(f"1200x800+{x}+{y}")
         
         # Configure modern style
         self.setup_modern_style()
