@@ -16,7 +16,7 @@
 🎯 **Modern GUI** • Clean, intuitive interface with native Windows styling and custom icon  
 📦 **Bulk Installation** • Select and install multiple ZIP files simultaneously  
 🔍 **Auto-Detection** • Automatically finds TTF, OTF, TTC, and OTC font files  
-🛡️ **Smart Permissions** • Tries system-wide installation, falls back to user-level gracefully  
+🛡️ **Permissions** • Installs system-wide (Administrator privileges required)  
 📊 **Progress Tracking** • Real-time progress updates with detailed feedback  
 🔧 **Error Handling** • Comprehensive error handling with user-friendly messages  
 ⚡ **Windows Integration** • Proper font registration using Windows APIs
@@ -46,7 +46,7 @@ python font_installer.py
 | **OS** | Windows 10/11 (or Windows 7+) |
 | **Python** | 3.6+ *(only for script version)* |
 | **Dependencies** | None *(uses Python standard library)* |
-| **Permissions** | User-level *(Admin optional for system-wide install)* |
+| **Permissions** | Administrator privileges required for system-wide install |
 
 ## 📖 How to Use
 
@@ -81,7 +81,7 @@ FontFlow ensures your installed fonts remain available even after restarting you
 
 - 📝 **Registry Registration**: Fonts are properly registered in the Windows registry
   - System-wide: `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts`
-  - User-level: `HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts`
+  - Fonts are registered in the system registry: `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts`
 - 💾 **File Persistence**: Font files are copied to permanent directories
 - 🔄 **Windows Integration**: Uses official Windows font APIs for maximum compatibility
 
@@ -99,9 +99,7 @@ FontFlow ensures your installed fonts remain available even after restarting you
 | Type | Description | Requirements |
 |------|-------------|--------------|
 | 🌍 **System-wide** | Available to all users | Administrator privileges |
-| 👤 **User-level** | Current user only | No special permissions |
-
-> 💡 **Smart Fallback**: FontFlow automatically tries system-wide installation first, then gracefully falls back to user-level if admin access isn't available.
+| 🌍 **System-wide** | Available to all users | Administrator privileges required |
 
 ## ⚙️ Technical Details
 
@@ -135,17 +133,16 @@ FontFlow ensures your installed fonts remain available even after restarting you
 
 ### 🔍 **Fonts not appearing in applications**
 - Try restarting the application that should use the font
-- User-level fonts may take a moment to appear in some apps
 - Verify the font file wasn't corrupted during extraction
 
 ### ❌ **Installation fails**  
-- The app automatically tries user-level installation if system-wide fails
+- This application installs fonts system-wide and requires Administrator privileges. If installation fails due to permissions, run the app as Administrator.
 - Check that ZIP files aren't corrupted or password-protected
 - Ensure ZIP files actually contain valid font files
 
-### 🛡️ **Want system-wide installation**
+### 🛡️ **Run as Administrator**
 - Right-click batch file → **"Run as Administrator"**
-- Or launch Command Prompt as Administrator: `python font_installer.py`
+- Or launch an elevated Command Prompt / PowerShell and run: `python font_installer.py`
 
 ### 🚫 **Application won't start**
 - Ensure Python 3.6+ is installed (script version only)
