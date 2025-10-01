@@ -61,9 +61,9 @@ class FontInstaller:
             
         # Center the window
         self.root.update_idletasks()
-        x = (self.root.winfo_screenwidth() // 2) - (1200 // 2)
-        y = (self.root.winfo_screenheight() // 2) - (800 // 2)
-        self.root.geometry(f"1200x800+{x}+{y}")
+        x = (self.root.winfo_screenwidth() // 2) - (840 // 2)
+        y = (self.root.winfo_screenheight() // 2) - (680 // 2)
+        self.root.geometry(f"840x680+{x}+{y}")
         self.root.minsize(400, 600)
         
         # Modern color scheme
@@ -86,9 +86,9 @@ class FontInstaller:
         
         # Center the window
         self.root.update_idletasks()
-        x = (self.root.winfo_screenwidth() // 2) - (1200 // 2)
-        y = (self.root.winfo_screenheight() // 2) - (800 // 2)
-        self.root.geometry(f"1200x800+{x}+{y}")
+        x = (self.root.winfo_screenwidth() // 2) - (840 // 2)
+        y = (self.root.winfo_screenheight() // 2) - (680 // 2)
+        self.root.geometry(f"840x680+{x}+{y}")
         
         # Configure modern style
         self.setup_modern_style()
@@ -175,7 +175,7 @@ class FontInstaller:
             print(f"Error checking administrator privileges: {e}")
             sys.exit(1)
 
-        desc_text += "🔐 Administrator mode • System-wide installation"
+        desc_text += "🔐 Administrator mode is required for system-wide installation"
         
         desc_label = ttk.Label(
             header_frame,
@@ -198,7 +198,7 @@ class FontInstaller:
         
         self.select_btn = ttk.Button(
             select_button_frame,
-            text="📂  Select ZIP Files",
+            text="Select ZIP Files",
             command=self.select_files,
             style='Primary.TButton'
         )
@@ -214,7 +214,7 @@ class FontInstaller:
         self.files_listbox = tk.Listbox(
             listbox_frame,
             height=5,
-            font=('Segoe UI', 10),
+            font=('Segoe UI', 12),
             selectmode=tk.EXTENDED,
             bg='#ffffff',
             fg='#212529',
@@ -234,7 +234,7 @@ class FontInstaller:
         # Clear button
         self.clear_btn = ttk.Button(
             file_card,
-            text="🗑️  Clear List",
+            text="Clear List",
             command=self.clear_files,
             state=tk.DISABLED,
             style='Secondary.TButton'
@@ -242,7 +242,7 @@ class FontInstaller:
         self.clear_btn.grid(row=2, column=0, sticky=(tk.W))
         
         # Progress card
-        progress_card = ttk.LabelFrame(main_frame, text="⚡  Installation Progress", padding=15)
+        progress_card = ttk.LabelFrame(main_frame, text="Installation Progress", padding=15)
         progress_card.grid(row=2, column=0, sticky=(tk.W, tk.E), pady=(0, 15))
         progress_card.columnconfigure(0, weight=1)
         
@@ -258,7 +258,7 @@ class FontInstaller:
         # Status label with icon
         self.status_label = ttk.Label(
             progress_card,
-            text="✅  Ready to install fonts",
+            text="Ready to install fonts",
             style='Status.TLabel'
         )
         self.status_label.grid(row=1, column=0, sticky=(tk.W))
@@ -266,7 +266,7 @@ class FontInstaller:
         # Install button (centered, compact spacing)
         self.install_btn = ttk.Button(
             main_frame,
-            text="🚀  Install Fonts",
+            text="Install Fonts",
             command=self.install_fonts,
             state=tk.DISABLED,
             style='Primary.TButton'
@@ -489,40 +489,27 @@ class FontInstaller:
             
             # Prepare detailed completion message with modern formatting
             if installed_count > 0:
-                message_parts = [f"🎉 Successfully installed {installed_count} out of {total_fonts} fonts!\n"]
+                message_parts = [f"Successfully installed {installed_count} out of {total_fonts} fonts"]
                 
                 if system_installs > 0:
-                    message_parts.append(f"🌐 {system_installs} fonts installed system-wide (available to all users)")
-                    message_parts.append("   • Registered in system registry for persistence across reboots")
+                    message_parts.append(f"\n{system_installs} fonts installed system-wide")
                 
                 if user_installs > 0:
-                    message_parts.append(f"👤 {user_installs} fonts installed for current user only")
-                    message_parts.append("   • Registered in user registry for persistence across reboots")
+                    message_parts.append(f"\n{user_installs} fonts installed for current user")
                     
                 if failed_installs:
-                    message_parts.append(f"\n⚠️ {len(failed_installs)} fonts failed to install:")
-                    for font_name, reason in failed_installs[:5]:  # Show first 5 failures
-                        message_parts.append(f"   • {font_name}: {reason}")
-                    if len(failed_installs) > 5:
-                        message_parts.append(f"   • ... and {len(failed_installs) - 5} more")
-                
-                message_parts.append("\n✨ The fonts are now permanently available in your applications!")
-                message_parts.append("💡 They will remain installed even after restarting your computer.")
+                    message_parts.append(f"\n{len(failed_installs)} fonts failed to install")
+                    
+                message_parts.append("\nThe fonts are now available in your applications")
                 
                 self.root.after(0, lambda: messagebox.showinfo(
-                    "🎨 Installation Complete",
+                    "Installation Complete",
                     "\n".join(message_parts)
                 ))
             else:
-                failure_details = "\n".join([f"• {name}: {reason}" for name, reason in failed_installs[:10]])
-                if len(failed_installs) > 10:
-                    failure_details += f"\n• ... and {len(failed_installs) - 10} more failures"
-                    
                 self.root.after(0, lambda: messagebox.showerror(
-                    "❌ Installation Failed",
-                    f"No fonts were successfully installed.\n\n"
-                    f"📝 Failure details:\n{failure_details}\n\n"
-                    "💡 Try running as Administrator for system-wide installation."
+                    "Installation Failed",
+                    "No fonts were installed.\n\nPlease try running as Administrator."
                 ))
                 
             # Re-enable buttons
@@ -562,26 +549,26 @@ class FontInstaller:
         
         # Configure modern button styles
         style.configure('Modern.TButton',
-                       font=('Segoe UI', 10),
+                       font=('Segoe UI', 12),
                        padding=(20, 12))
         
         style.configure('Primary.TButton',
-                       font=('Segoe UI', 11, 'bold'),
+                       font=('Segoe UI', 13, 'bold'),
                        padding=(20, 12))
         
         style.configure('Secondary.TButton',
-                       font=('Segoe UI', 10),
+                       font=('Segoe UI', 12),
                        padding=(15, 10))
         
         # Configure label styles
         style.configure('Title.TLabel',
-                       font=('Segoe UI', 24, 'bold'))
+                       font=('Segoe UI', 26, 'bold'))
         
         style.configure('Subtitle.TLabel',
-                       font=('Segoe UI', 11))
+                       font=('Segoe UI', 13))
         
         style.configure('Status.TLabel',
-                       font=('Segoe UI', 10))
+                       font=('Segoe UI', 13, 'bold'))
         
         # Configure frame styles
         style.configure('Card.TLabelFrame',
