@@ -66,19 +66,19 @@ class FontInstaller:
         self.root.geometry(f"840x680+{x}+{y}")
         self.root.minsize(400, 600)
         
-        # Modern color scheme
+        # Modern dark color scheme
         self.colors = {
-            'bg': '#f8f9fa',           # Light gray background
-            'surface': '#ffffff',       # White surface
-            'primary': '#0d6efd',      # Modern blue
-            'primary_hover': '#0b5ed7', # Darker blue
-            'secondary': '#6c757d',    # Gray
-            'success': '#198754',      # Green
+            'bg': '#1a1a1a',           # Dark background
+            'surface': '#2d2d2d',       # Dark surface
+            'primary': '#007acc',      # Modern blue
+            'primary_hover': '#005a9e', # Darker blue
+            'secondary': '#858585',    # Light gray
+            'success': '#28a745',      # Green
             'danger': '#dc3545',       # Red
-            'warning': '#fd7e14',      # Orange
-            'text': '#212529',         # Dark text
-            'text_muted': '#6c757d',   # Muted text
-            'border': '#dee2e6'        # Light border
+            'warning': '#ffc107',      # Orange
+            'text': '#ffffff',         # Light text
+            'text_muted': '#b3b3b3',   # Muted light text
+            'border': '#404040'        # Dark border
         }
         
         # Set window background
@@ -216,9 +216,9 @@ class FontInstaller:
             height=5,
             font=('Segoe UI', 12),
             selectmode=tk.EXTENDED,
-            bg='#ffffff',
-            fg='#212529',
-            selectbackground='#0d6efd',
+            bg=self.colors['surface'],
+            fg=self.colors['text'],
+            selectbackground=self.colors['primary'],
             selectforeground='white',
             relief='solid',
             borderwidth=1,
@@ -535,55 +535,127 @@ class FontInstaller:
         self.root.mainloop()
 
     def setup_modern_style(self):
-        """Configure modern ttk styles."""
+        """Configure modern dark theme ttk styles."""
         style = ttk.Style()
         
         # Use a modern theme as base
         try:
-            style.theme_use('vista')  # More modern than winnative
+            style.theme_use('clam')   # Clam theme works better for dark themes
         except:
-            try:
-                style.theme_use('clam')   # Fallback to clam theme
-            except:
-                style.theme_use('default')  # Ultimate fallback
+            style.theme_use('default')  # Ultimate fallback
+        
+        # Configure dark theme colors
+        style.configure('.',
+                       background=self.colors['bg'],
+                       foreground=self.colors['text'],
+                       bordercolor=self.colors['border'],
+                       darkcolor=self.colors['surface'],
+                       lightcolor=self.colors['surface'],
+                       troughcolor=self.colors['surface'],
+                       focuscolor='none',
+                       selectbackground=self.colors['primary'],
+                       selectforeground='white')
         
         # Configure modern button styles
         style.configure('Modern.TButton',
                        font=('Segoe UI', 12),
-                       padding=(20, 12))
+                       padding=(20, 12),
+                       background=self.colors['surface'],
+                       foreground=self.colors['text'],
+                       borderwidth=1,
+                       relief='solid')
+        
+        style.map('Modern.TButton',
+                 background=[('active', self.colors['secondary']),
+                           ('pressed', self.colors['border'])])
         
         style.configure('Primary.TButton',
                        font=('Segoe UI', 13, 'bold'),
-                       padding=(20, 12))
+                       padding=(20, 12),
+                       background=self.colors['primary'],
+                       foreground='white',
+                       borderwidth=0)
+        
+        style.map('Primary.TButton',
+                 background=[('active', self.colors['primary_hover']),
+                           ('pressed', self.colors['primary_hover'])])
         
         style.configure('Secondary.TButton',
                        font=('Segoe UI', 12),
-                       padding=(15, 10))
+                       padding=(15, 10),
+                       background=self.colors['secondary'],
+                       foreground=self.colors['text'],
+                       borderwidth=1,
+                       relief='solid')
+        
+        style.map('Secondary.TButton',
+                 background=[('active', self.colors['border']),
+                           ('pressed', self.colors['border'])])
         
         # Configure label styles
         style.configure('Title.TLabel',
-                       font=('Segoe UI', 26, 'bold'))
+                       font=('Segoe UI', 26, 'bold'),
+                       background=self.colors['bg'],
+                       foreground=self.colors['text'])
         
         style.configure('Subtitle.TLabel',
-                       font=('Segoe UI', 13))
+                       font=('Segoe UI', 13),
+                       background=self.colors['bg'],
+                       foreground=self.colors['text_muted'])
         
         style.configure('Status.TLabel',
-                       font=('Segoe UI', 13, 'bold'))
+                       font=('Segoe UI', 13, 'bold'),
+                       background=self.colors['surface'],
+                       foreground=self.colors['text'])
         
         # Configure frame styles
+        style.configure('TFrame',
+                       background=self.colors['bg'],
+                       borderwidth=0)
+        
+        style.configure('TLabelFrame',
+                       background=self.colors['bg'],
+                       foreground=self.colors['text'],
+                       borderwidth=1,
+                       relief='solid')
+        
+        style.configure('TLabelFrame.Label',
+                       background=self.colors['bg'],
+                       foreground=self.colors['text'],
+                       font=('Segoe UI', 11, 'bold'))
+        
         style.configure('Card.TLabelFrame',
-                       padding=20)
+                       padding=20,
+                       background=self.colors['surface'],
+                       borderwidth=1,
+                       relief='solid')
         
         style.configure('Card.TLabelFrame.Label',
-                       font=('Segoe UI', 11, 'bold'))
+                       font=('Segoe UI', 11, 'bold'),
+                       background=self.colors['surface'],
+                       foreground=self.colors['text'])
         
         # Configure progress bar
         style.configure('Modern.Horizontal.TProgressbar',
-                       borderwidth=0)
+                       borderwidth=0,
+                       background=self.colors['primary'],
+                       troughcolor=self.colors['surface'])
         
-        # Configure frames
-        style.configure('Modern.TFrame')
-        style.configure('Surface.TFrame')
+        # Configure scrollbar with comprehensive dark theme styling
+        style.configure('Vertical.TScrollbar',
+                       background=self.colors['surface'],
+                       troughcolor=self.colors['bg'],
+                       borderwidth=0,
+                       arrowcolor=self.colors['text'],
+                       darkcolor=self.colors['border'],
+                       lightcolor=self.colors['surface'],
+                       gripcolor=self.colors['secondary'])
+        
+        style.map('Vertical.TScrollbar',
+                 background=[('active', self.colors['secondary']),
+                           ('pressed', self.colors['border'])],
+                 arrowcolor=[('active', self.colors['text']),
+                           ('pressed', self.colors['text'])])
 
     def check_user_font_directory(self):
         """Check and prepare user font directories."""
