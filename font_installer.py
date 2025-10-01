@@ -26,6 +26,8 @@ except ImportError:
 HWND_BROADCAST = 0xFFFF
 WM_FONTCHANGE = 0x001D
 SMTO_ABORTIFHUNG = 0x0002
+DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1 = 19
+DWMWA_USE_IMMERSIVE_DARK_MODE = 20
 
 class FontInstaller:
     def __init__(self):
@@ -90,20 +92,194 @@ class FontInstaller:
         y = (self.root.winfo_screenheight() // 2) - (680 // 2)
         self.root.geometry(f"840x680+{x}+{y}")
         
+        # Try enabling native DWM dark title bar. If not available, we'll draw a custom one.
+        self.use_custom_titlebar = True
+        try:
+            # Try to set the native dark title bar attribute
+            try:
+                hwnd = self.root.winfo_id()
+                # Try newer attribute
+                res = ctypes.windll.dwmapi.DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, ctypes.byref(ctypes.c_int(1)), ctypes.sizeof(ctypes.c_int))
+                if res == 0:
+                    self.use_custom_titlebar = False
+                else:
+                    # Try older attribute
+                    res = ctypes.windll.dwmapi.DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1, ctypes.byref(ctypes.c_int(1)), ctypes.sizeof(ctypes.c_int))
+                    if res == 0:
+                        self.use_custom_titlebar = False
+            except Exception:
+                self.use_custom_titlebar = True
+        except Exception:
+            self.use_custom_titlebar = True
+
         # Configure modern style
         self.setup_modern_style()
-        
+
     def setup_gui(self):
         """Create the modern GUI interface."""
-        # Main container with reduced padding for more compact layout
+        # Custom title bar (replaces native window chrome) - only used if native DWM dark titlebar not available
+        titlebar = None
+        if self.use_custom_titlebar:
+            try:
+                # Hide native chrome so titlebar area is ours
+                self.root.overrideredirect(True)
+            except Exception:
+                pass
+            titlebar = tk.Frame(self.root, bg=self.colors['surface'], relief='flat', bd=0)
+            titlebar.grid(row=0, column=0, sticky=(tk.W, tk.E))
+
+        if self.use_custom_titlebar and titlebar is not None:
+            # Title/icon on left
+            try:
+                if PIL_AVAILABLE and os.path.exists('icon.png'):
+                    img = Image.open('icon.png')
+                    img = img.resize((16, 16), Image.Resampling.LANCZOS)
+                    self._title_icon = ImageTk.PhotoImage(img)
+                    icon_lbl = tk.Label(titlebar, image=self._title_icon, bg=self.colors['surface'])
+                elif os.path.exists('icon.png'):
+                    self._title_icon = tk.PhotoImage(file='icon.png')
+                    icon_lbl = tk.Label(titlebar, image=self._title_icon, bg=self.colors['surface'])
+                else:
+                    icon_lbl = tk.Label(titlebar, text='🎨', bg=self.colors['surface'], fg=self.colors['text'])
+            except Exception:
+                icon_lbl = tk.Label(titlebar, text='🎨', bg=self.colors['surface'], fg=self.colors['text'])
+            icon_lbl.pack(side=tk.LEFT, padx=(8, 6), pady=4)
+
+            title_lbl = tk.Label(titlebar, text='FontFlow', bg=self.colors['surface'], fg=self.colors['text'], font=('Segoe UI', 10, 'bold'))
+            title_lbl.pack(side=tk.LEFT, padx=(0, 6))
+
+            # Spacer
+            spacer = tk.Frame(titlebar, bg=self.colors['surface'])
+            spacer.pack(side=tk.LEFT, expand=True, fill=tk.X)
+
+            # Window control buttons
+            btn_bg = self.colors['surface']
+            btn_fg = self.colors['text']
+
+            def _make_btn(text, cmd, padx=8, font_size=11, width=4):
+                b = tk.Button(titlebar,
+                             text=text,
+                             command=cmd,
+                             bg=btn_bg,
+                             fg=btn_fg,
+                             bd=0,
+                             relief='flat',
+                             activebackground=self.colors['border'],
+                             activeforeground=btn_fg,
+                             highlightthickness=0,
+                             font=('Segoe UI', font_size, 'bold'),
+                             width=width,
+                             height=1)
+                b.pack(side=tk.RIGHT, padx=(0, 6), pady=6)
+                return b
+
+            # Close
+            _make_btn('✕', lambda: self.root.destroy(), font_size=12, width=4)
+            # Maximize/Restore
+            self._is_maximized = False
+            self._prev_geometry = None
+            def _toggle_maximize():
+                if not self._is_maximized:
+                    # Save previous geometry and maximize to screen
+                    self._prev_geometry = self.root.geometry()
+                    sw = self.root.winfo_screenwidth()
+                    sh = self.root.winfo_screenheight()
+                    # Leave a tiny margin so taskbar remains visible
+                    self.root.geometry(f"{sw}x{sh}+0+0")
+                    self._is_maximized = True
+                else:
+                    if self._prev_geometry:
+                        self.root.geometry(self._prev_geometry)
+                    self._is_maximized = False
+            _make_btn('▢', _toggle_maximize, font_size=14, width=4)
+            # Minimize (handle overrideredirect to allow proper minimize)
+            def _minimize():
+                try:
+                    # If using custom chrome, temporarily disable overrideredirect so Windows can minimize properly
+                    if self.use_custom_titlebar:
+                        try:
+                            self.root.overrideredirect(False)
+                        except Exception:
+                            pass
+                    self.root.iconify()
+                except Exception:
+                    try:
+                        self.root.iconify()
+                    except:
+                        pass
+
+            _make_btn('—', _minimize, font_size=12, width=4)
+
+            # Titlebar drag support
+            def _start_move(event):
+                # Record mouse and window position for smoother dragging
+                try:
+                    self._drag_mouse_x = event.x_root
+                    self._drag_mouse_y = event.y_root
+                    self._drag_win_x = self.root.winfo_x()
+                    self._drag_win_y = self.root.winfo_y()
+                except Exception:
+                    pass
+
+            def _do_move(event):
+                try:
+                    dx = event.x_root - getattr(self, '_drag_mouse_x', event.x_root)
+                    dy = event.y_root - getattr(self, '_drag_mouse_y', event.y_root)
+                    new_x = getattr(self, '_drag_win_x', self.root.winfo_x()) + dx
+                    new_y = getattr(self, '_drag_win_y', self.root.winfo_y()) + dy
+                    self.root.geometry(f"+{new_x}+{new_y}")
+                except Exception:
+                    pass
+
+            titlebar.bind('<ButtonPress-1>', _start_move)
+            titlebar.bind('<B1-Motion>', _do_move)
+            titlebar.bind('<Double-Button-1>', lambda e: _toggle_maximize())
+
+    # Main container with reduced padding for more compact layout
         main_frame = ttk.Frame(self.root, padding="20")
-        main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        # If we used a custom titlebar, main content starts at row=1, otherwise at row=0
+        main_row = 1 if self.use_custom_titlebar else 0
+        main_frame.grid(row=main_row, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
         
         # Configure grid weights
         self.root.columnconfigure(0, weight=1)
-        self.root.rowconfigure(0, weight=1)
+        if self.use_custom_titlebar:
+            self.root.rowconfigure(0, weight=0)  # titlebar
+            self.root.rowconfigure(1, weight=1)  # main content
+        else:
+            self.root.rowconfigure(0, weight=1)
         main_frame.columnconfigure(0, weight=1)
         main_frame.rowconfigure(1, weight=1)  # File selection should expand
+
+        # Keep custom chrome behavior across minimize/restore (Windows)
+        if self.use_custom_titlebar:
+            # When iconifying, allow the window manager to perform the minimize by
+            # temporarily disabling overrideredirect. On restore, re-enable it.
+            def _on_unmap(event):
+                try:
+                    if self.use_custom_titlebar:
+                        try:
+                            self.root.overrideredirect(False)
+                        except Exception:
+                            pass
+                except Exception:
+                    pass
+
+            def _on_map(event):
+                try:
+                    if self.use_custom_titlebar:
+                        def _reapply():
+                            try:
+                                self.root.overrideredirect(True)
+                            except Exception:
+                                pass
+                        # Small delay to let the window manager finish restoring
+                        self.root.after(50, _reapply)
+                except Exception:
+                    pass
+
+            self.root.bind('<Unmap>', _on_unmap)
+            self.root.bind('<Map>', _on_map)
         
         # Header section
         header_frame = ttk.Frame(main_frame)
