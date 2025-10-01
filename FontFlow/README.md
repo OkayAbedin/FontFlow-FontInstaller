@@ -7,6 +7,10 @@
 
 > 🚀 A sleek, modern Windows application for effortless font installation from ZIP archives
 
+<div align="center">
+  <img src="icon.png" alt="FontFlow Icon" width="128" height="128">
+</div>
+
 ## ✨ Features
 
 🎯 **Modern GUI** • Clean, intuitive interface with native Windows styling and custom icon  
@@ -69,6 +73,17 @@ FontFlow.exe                # Standalone version
 ### 4️⃣ Enjoy Your New Fonts
 - ✅ Fonts are immediately available in all applications
 - 🔄 No restart required!
+- 🔒 **Fonts persist across computer reboots** (properly registered in Windows registry)
+
+## 🔒 Font Persistence
+
+FontFlow ensures your installed fonts remain available even after restarting your computer by:
+
+- 📝 **Registry Registration**: Fonts are properly registered in the Windows registry
+  - System-wide: `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts`
+  - User-level: `HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts`
+- 💾 **File Persistence**: Font files are copied to permanent directories
+- 🔄 **Windows Integration**: Uses official Windows font APIs for maximum compatibility
 
 ## 🎯 Supported Font Formats
 
@@ -94,6 +109,7 @@ FontFlow.exe                # Standalone version
 <summary>🔧 <strong>Technical Implementation</strong></summary>
 
 - **Windows API Integration**: Uses `AddFontResourceW` for proper font registration
+- **Registry Persistence**: Fonts are permanently registered in Windows registry for persistence across reboots
 - **Threading**: Implements thread-based installation to maintain responsive GUI
 - **Best Practices**: Follows Windows font installation guidelines
 - **Modern UI**: Built with tkinter using native Windows styling

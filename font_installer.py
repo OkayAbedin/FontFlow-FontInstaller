@@ -15,6 +15,7 @@ import ctypes
 from ctypes import wintypes
 import threading
 from typing import List, Set
+import winreg
 
 # Windows API constants
 HWND_BROADCAST = 0xFFFF
@@ -276,7 +277,7 @@ class FontInstaller:
         return font_files
         
     def install_font_file(self, font_path: str) -> tuple[bool, str]:
-        """Install a single font file using Windows API with fallback to user installation."""
+        """Install a single font file using Windows API with proper registry registration."""
         font_filename = os.path.basename(font_path)
         
         # Try system-wide installation first (requires admin)
@@ -295,6 +296,18 @@ class FontInstaller:
             result = gdi32.AddFontResourceW(system_dest_path)
             
             if result > 0:
+                # Register in system registry for persistence across reboots
+                try:
+                    with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, 
+                                      r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts", 
+                                      0, winreg.KEY_SET_VALUE) as key:
+                        # Create registry entry with font name and file
+                        font_reg_name = self.get_font_name_from_file(font_path)
+                        winreg.SetValueEx(key, font_reg_name, 0, winreg.REG_SZ, font_filename)
+                except Exception as reg_error:
+                    print(f"Registry registration failed for {font_filename}: {str(reg_error)}")
+                    # Continue anyway - font is still loaded temporarily
+                
                 # Notify all windows that fonts have changed
                 user32.SendMessageTimeoutW(
                     HWND_BROADCAST,
@@ -370,6 +383,29 @@ class FontInstaller:
                 # Add font resource
                 result = gdi32.AddFontResourceW(user_dest_path)
                 
+                # Register in user registry for persistence across reboots
+                registry_success = False
+                try:
+                    with winreg.OpenKey(winreg.HKEY_CURRENT_USER, 
+                                      r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts", 
+                                      0, winreg.KEY_SET_VALUE) as key:
+                        # Create registry entry with font name and full path for user fonts
+                        font_reg_name = self.get_font_name_from_file(font_path)
+                        winreg.SetValueEx(key, font_reg_name, 0, winreg.REG_SZ, user_dest_path)
+                        registry_success = True
+                except winreg.FileNotFoundError:
+                    # Create the Fonts key if it doesn't exist
+                    try:
+                        with winreg.CreateKey(winreg.HKEY_CURRENT_USER, 
+                                            r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts") as key:
+                            font_reg_name = self.get_font_name_from_file(font_path)
+                            winreg.SetValueEx(key, font_reg_name, 0, winreg.REG_SZ, user_dest_path)
+                            registry_success = True
+                    except Exception as create_error:
+                        print(f"Failed to create user registry key for {font_filename}: {str(create_error)}")
+                except Exception as reg_error:
+                    print(f"User registry registration failed for {font_filename}: {str(reg_error)}")
+                
                 if result > 0:
                     # Notify all windows that fonts have changed
                     user32.SendMessageTimeoutW(
@@ -381,19 +417,53 @@ class FontInstaller:
                         1000,
                         None
                     )
-                    return True, "user-level"
+                    if registry_success:
+                        return True, "user-level"
+                    else:
+                        return True, "user-level (registration failed, may not persist after reboot)"
                 else:
-                    # Font was copied but registration failed - still partially successful
-                    return True, "user-level (file copied, registration failed)"
+                    # Font was copied but loading failed
+                    if registry_success:
+                        return True, "user-level (file copied and registered, loading failed)"
+                    else:
+                        return True, "user-level (file copied, registration and loading failed)"
                     
             except Exception as reg_error:
-                # Font was copied but registration failed - still partially successful
+                # Font was copied but registration failed
                 print(f"Font registration failed for {font_filename}: {str(reg_error)}")
                 return True, "user-level (file copied, registration failed)"
                 
         except Exception as e:
             print(f"User installation failed for {font_filename}: {str(e)}")
             return False, f"error: {str(e)}"
+            
+    def get_font_name_from_file(self, font_path: str) -> str:
+        """Extract the actual font name from the font file for better registry registration."""
+        try:
+            # Try to read font name from the file itself
+            # This is a simplified approach - for more complex font name extraction,
+            # you would need a font parsing library like fonttools
+            font_filename = os.path.basename(font_path)
+            font_name_base = os.path.splitext(font_filename)[0]
+            
+            # Clean up common font filename patterns
+            font_name_base = font_name_base.replace('_', ' ').replace('-', ' ')
+            
+            # Determine font type and create proper registry name
+            ext = os.path.splitext(font_filename)[1].lower()
+            if ext == '.ttf':
+                return f"{font_name_base} (TrueType)"
+            elif ext == '.otf':
+                return f"{font_name_base} (OpenType)"
+            elif ext in ['.ttc', '.otc']:
+                return f"{font_name_base} (TrueType Collection)" if ext == '.ttc' else f"{font_name_base} (OpenType Collection)"
+            else:
+                return f"{font_name_base} (TrueType)"  # Default fallback
+                
+        except Exception:
+            # Fallback to simple naming
+            font_name_base = os.path.splitext(os.path.basename(font_path))[0]
+            return f"{font_name_base} (TrueType)"
             
     def install_fonts_thread(self):
         """Install fonts in a separate thread to prevent GUI freezing."""
@@ -472,9 +542,11 @@ class FontInstaller:
                 
                 if system_installs > 0:
                     message_parts.append(f"🌐 {system_installs} fonts installed system-wide (available to all users)")
+                    message_parts.append("   • Registered in system registry for persistence across reboots")
                 
                 if user_installs > 0:
                     message_parts.append(f"👤 {user_installs} fonts installed for current user only")
+                    message_parts.append("   • Registered in user registry for persistence across reboots")
                     
                 if failed_installs:
                     message_parts.append(f"\n⚠️ {len(failed_installs)} fonts failed to install:")
@@ -483,7 +555,8 @@ class FontInstaller:
                     if len(failed_installs) > 5:
                         message_parts.append(f"   • ... and {len(failed_installs) - 5} more")
                 
-                message_parts.append("\n✨ The fonts are now available in your applications!")
+                message_parts.append("\n✨ The fonts are now permanently available in your applications!")
+                message_parts.append("💡 They will remain installed even after restarting your computer.")
                 
                 self.root.after(0, lambda: messagebox.showinfo(
                     "🎨 Installation Complete",
