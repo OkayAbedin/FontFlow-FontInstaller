@@ -39,6 +39,14 @@ class FontInstaller:
         """Configure the main window with modern styling."""
         self.root.title("FontFlow")
         
+        # Set App User Model ID for Windows taskbar icon
+        try:
+            # This ensures Windows shows the correct icon in the taskbar
+            myappid = 'okayabedin.fontflow.installer.1.0'
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+        except Exception:
+            pass
+        
         # Set window icon
         try:
             # Prefer .ico file for Windows compatibility
