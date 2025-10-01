@@ -43,7 +43,7 @@ python font_installer.py
 
 | Component | Requirement |
 |-----------|-------------|
-| **OS** | Windows 10/11 (or Windows 7+) |
+| **OS** | Windows 10/11 |
 | **Python** | 3.6+ *(only for script version)* |
 | **Dependencies** | None *(uses Python standard library)* |
 | **Permissions** | Administrator privileges required for system-wide install |
